@@ -2,6 +2,7 @@ set(SRC
     main.cpp
     mainwindow.hpp
     mainwindow.cpp
+    resource.qrc
 )
 
 add_executable(QSoundBoard ${SRC})
