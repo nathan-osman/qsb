@@ -31,11 +31,18 @@ class MainWindow : public QMainWindow
 {
 public:
 
-    //...
+    MainWindow();
+
+private slots:
+
+    void open();
+    void save();
+    void saveAs();
+    void about();
 
 private:
 
-    //...
+    void initUi();
 };
 
 #endif // MAINWINDOW_HPP

@@ -22,4 +22,84 @@
  * IN THE SOFTWARE.
  */
 
+#include <QAction>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QStyle>
+#include <QToolBar>
+
 #include "mainwindow.hpp"
+
+MainWindow::MainWindow()
+{
+    initUi();
+
+    setWindowIcon(QPixmap(":/images/logo.png"));
+    setWindowTitle("QSoundBoard");
+    resize(1024, 768);
+}
+
+void MainWindow::open()
+{
+    //...
+}
+
+void MainWindow::save()
+{
+    //...
+}
+
+void MainWindow::saveAs()
+{
+    //...
+}
+
+void MainWindow::about()
+{
+    QMessageBox::about(
+        this,
+        "About QSoundBoard",
+        "QSoundBoard version 1.0\nCopyright 2026 - Nathan Osman"
+    );
+}
+
+void MainWindow::initUi()
+{
+    QAction *actionOpen = new QAction("&Open...", this);
+    actionOpen->setIcon(style()->standardIcon(QStyle::SP_DialogOpenButton));
+    actionOpen->setShortcut(QKeySequence::Open);
+    connect(actionOpen, &QAction::triggered, this, &MainWindow::open);
+
+    QAction *actionSave = new QAction("&Save", this);
+    actionSave->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
+    actionSave->setShortcut(QKeySequence::Save);
+    connect(actionSave, &QAction::triggered, this, &MainWindow::save);
+
+    QAction *actionSaveAs = new QAction("S&ave As...", this);
+    actionSaveAs->setShortcut(QKeySequence::SaveAs);
+    connect(actionSaveAs, &QAction::triggered, this, &MainWindow::saveAs);
+
+    QAction *actionQuit = new QAction("&Quit", this);
+    actionQuit->setShortcut(QKeySequence::Quit);
+    connect(actionQuit, &QAction::triggered, this, &QWidget::close);
+
+    QAction *actionAbout = new QAction("&About", this);
+    connect(actionAbout, &QAction::triggered, this, &MainWindow::about);
+
+    QMenu *menuFile = menuBar()->addMenu("&File");
+    menuFile->addAction(actionOpen);
+    menuFile->addAction(actionSave);
+    menuFile->addAction(actionSaveAs);
+    menuFile->addSeparator();
+    menuFile->addAction(actionQuit);
+
+    QMenu *menuHelp = menuBar()->addMenu("&Help");
+    menuHelp->addAction(actionAbout);
+
+    QToolBar *toolBar = addToolBar("Main Toolbar");
+    toolBar->setMovable(false);
+    toolBar->addAction(actionOpen);
+    toolBar->addAction(actionSave);
+}
