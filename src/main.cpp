@@ -23,12 +23,18 @@
  */
 
 #include <QApplication>
+#include <QStyleFactory>
 
 #include "mainwindow.hpp"
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
+
+#ifdef Q_OS_WIN
+    // The windows11 style is too buggy right now
+    QApplication::setStyle(QStyleFactory::create("windowsvista"));
+#endif
 
     MainWindow mainWindow;
     mainWindow.show();
