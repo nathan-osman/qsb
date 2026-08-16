@@ -79,8 +79,9 @@ QJsonObject Category::serialize() const
     object.insert("name", mLabelName.text());
 
     QJsonArray clips;
-    for (auto i : mLayoutClips.children()) {
-        clips.append(dynamic_cast<Clip *>(i)->serialize());
+    for (int i = 0; i < mLayoutClips.count(); i++) {
+        auto clip = dynamic_cast<Clip *>(mLayoutClips.itemAt(i)->widget());
+        clips.append(clip->serialize());
     }
     object.insert("clips", clips);
 

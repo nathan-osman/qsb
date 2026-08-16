@@ -25,24 +25,61 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include <QAction>
+#include <QHBoxLayout>
 #include <QMainWindow>
+#include <QWidget>
+
+#include "category.hpp"
+#include "manager.hpp"
 
 class MainWindow : public QMainWindow
 {
+    Q_OBJECT
+
 public:
 
     MainWindow();
 
 private slots:
 
-    void open();
-    void save();
-    void saveAs();
-    void about();
+    void onNew();
+    void onOpen();
+    void onSave();
+    void onSaveAs();
+    void onAbout();
+
+    void onCategoryRemove();
+
+    void onNewCategory();
+
+    void onMarkDirty();
+
+protected:
+
+    void closeEvent(QCloseEvent *event);
 
 private:
 
     void initUi();
+    void initDocument();
+
+    bool loadDocument(const QString &filename);
+    bool saveDocument(const QString &filename);
+
+    Category *newCategory();
+
+    bool cannotClose();
+    void setFilename(const QString &);
+
+    Manager mManager;
+
+    QAction mActionSave;
+    QHBoxLayout mLayoutMain;
+    QWidget *mWidgetCategories;
+    QHBoxLayout *mLayoutCategories;
+
+    QString mFilename;
 };
 
 #endif // MAINWINDOW_HPP
