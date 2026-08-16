@@ -1,0 +1,45 @@
+;NSIS Installer for ${PROJECT_NAME}
+
+!include "MUI2.nsh"
+
+Name "${PROJECT_NAME}"
+OutFile "${CMAKE_CURRENT_BINARY_DIR}\${PROJECT_NAME}-${PROJECT_VERSION}-setup.exe"
+Unicode True
+
+InstallDir "$LOCALAPPDATA\Programs\${PROJECT_NAME}"
+InstallDirRegKey HKCU "Software\${PROJECT_NAME}" ""
+
+ManifestDPIAware true
+RequestExecutionLevel User
+
+!define MUI_ABORTWARNING
+!define MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\icon.ico"
+
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "${CMAKE_SOURCE_DIR}\LICENSE.txt"
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+
+!insertmacro MUI_LANGUAGE "English"
+
+Section "Application" SecApp
+  SetOutPath "$INSTDIR"
+
+  File "$<TARGET_FILE:QSoundBoard>"
+
+  WriteRegStr HKCU "Software\${PROJECT_NAME}" "" $INSTDIR
+  WriteUninstaller "$INSTDIR\Uninstall.exe"
+SectionEnd
+
+Section "Uninstall"
+  Delete "$INSTDIR\$<TARGET_FILE_NAME:QSoundBoard>"
+  Delete "$INSTDIR\Uninstall.exe"
+
+  RMDir "$INSTDIR"
+
+  DeleteRegKey /ifempty HKCU "Software\${PROJECT_NAME}"
+SectionEnd

@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
-project(QSoundBoard VERSION 1.0 LANGUAGES CXX)
+
+set(PROJECT_NAME "QSoundBoard")
+set(PROJECT_AUTHOR "Nathan Osman")
+
+set(PROJECT_VERSION_MAJOR 1)
+set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
+
+project(QSoundBoard VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,4 +18,5 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Multimedia Widgets)
 
+add_subdirectory(dist)
 add_subdirectory(src)
