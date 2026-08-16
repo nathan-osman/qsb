@@ -28,6 +28,7 @@
 #include <QPushButton>
 
 #include "category.hpp"
+#include "categorydialog.hpp"
 #include "pixmaps.hpp"
 
 Category::Category(Manager *manager, QWidget *parent)
@@ -43,6 +44,11 @@ Category::Category(Manager *manager, QWidget *parent)
     mLabelName.setFont(font);
     mLabelName.setText("[Untitled]");
 
+    QPushButton *buttonSettings = new QPushButton;
+    buttonSettings->setIcon(getPixmapSettings());
+    buttonSettings->setToolTip("Settings");
+    connect(buttonSettings, &QAbstractButton::clicked, this, &Category::onSettings);
+
     QPushButton *buttonRemove = new QPushButton;
     buttonRemove->setIcon(getPixmapRemove());
     buttonRemove->setToolTip("Remove");
@@ -51,6 +57,7 @@ Category::Category(Manager *manager, QWidget *parent)
     QHBoxLayout *titleLayout = new QHBoxLayout;
     titleLayout->addWidget(&mLabelName);
     titleLayout->addStretch(1);
+    titleLayout->addWidget(buttonSettings);
     titleLayout->addWidget(buttonRemove);
 
     mWidgetClips.setLayout(&mLayoutClips);
@@ -87,6 +94,15 @@ void Category::deserialize(const QJsonObject &object)
     const QJsonArray clips = object.value("clips").toArray();
     for (auto i : clips) {
         newClip()->deserialize(i.toObject());
+    }
+}
+
+void Category::onSettings()
+{
+    CategoryDialog dialog(mLabelName.text(), this);
+    if (dialog.exec() == QDialog::Accepted) {
+        mLabelName.setText(dialog.name());
+        emit markDirty();
     }
 }
 

@@ -51,6 +51,7 @@ signals:
 
 private slots:
 
+    void onSettings();
     void onNewClip();
 
 private:
