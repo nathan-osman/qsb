@@ -23,6 +23,7 @@
  */
 
 #include <QFont>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QJsonArray>
 #include <QPainter>
@@ -57,10 +58,16 @@ Category::Category(Manager *manager, QWidget *parent)
     connect(buttonRemove, &QAbstractButton::clicked, this, &Category::remove);
 
     QHBoxLayout *titleLayout = new QHBoxLayout;
+    titleLayout->setSpacing(0);
     titleLayout->addWidget(&mLabelName);
     titleLayout->addStretch(1);
     titleLayout->addWidget(buttonSettings);
     titleLayout->addWidget(buttonRemove);
+
+    QFrame *hLine = new QFrame;
+    hLine->setContentsMargins(0, 32, 0, 32);
+    hLine->setFrameShape(QFrame::HLine);
+    hLine->setFrameShadow(QFrame::Sunken);
 
     mWidgetClips.setLayout(&mLayoutClips);
 
@@ -70,7 +77,10 @@ Category::Category(Manager *manager, QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(titleLayout);
+    mainLayout->addWidget(hLine);
+    mainLayout->addSpacing(8);
     mainLayout->addWidget(&mWidgetClips);
+    mainLayout->addSpacing(8);
     mainLayout->addWidget(buttonNew);
     mainLayout->addStretch(1);
 }

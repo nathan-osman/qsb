@@ -29,7 +29,7 @@ Manager::~Manager()
     qDeleteAll(mPlayers);
 }
 
-Player *Manager::play(const QString &filename, float volume)
+Player *Manager::queue(const QString &filename, float volume)
 {
     Player *player;
 
@@ -42,7 +42,7 @@ Player *Manager::play(const QString &filename, float volume)
         player = mIdlePlayers.takeFirst();
     }
 
-    player->play(filename, volume);
+    player->init(filename, volume);
     return player;
 }
 

@@ -23,7 +23,9 @@
  */
 
 #include <QHBoxLayout>
+#include <QPainter>
 #include <QPixmap>
+#include <QStyleOption>
 
 #include "clip.hpp"
 #include "clipdialog.hpp"
@@ -35,11 +37,11 @@ Clip::Clip(Manager *manager, QWidget *parent)
     , mPlayer(nullptr)
     , mVolume(100)
 {
-    mLabelName.setText("[Untitled]");
-
     mButtonPlayStop.setIcon(getPixmapPlay());
     mButtonPlayStop.setToolTip("Play / Stop");
     connect(&mButtonPlayStop, &QAbstractButton::clicked, this, &Clip::onPlayStop);
+
+    mLabelName.setText("[Untitled]");
 
     QPushButton *buttonSettings = new QPushButton;
     buttonSettings->setIcon(getPixmapSettings());
@@ -48,10 +50,9 @@ Clip::Clip(Manager *manager, QWidget *parent)
 
     QHBoxLayout *hboxLayout = new QHBoxLayout(this);
     hboxLayout->setContentsMargins(0, 0, 0, 0);
-    hboxLayout->setSpacing(0);
+    hboxLayout->addWidget(&mButtonPlayStop);
     hboxLayout->addWidget(&mLabelName);
     hboxLayout->addStretch(1);
-    hboxLayout->addWidget(&mButtonPlayStop);
     hboxLayout->addWidget(buttonSettings);
     setLayout(hboxLayout);
 }
@@ -72,14 +73,24 @@ void Clip::deserialize(const QJsonObject &object)
     mVolume = object.value("volume").toInt();
 }
 
+void Clip::paintEvent(QPaintEvent *)
+{
+    QStyleOption styleOption;
+    styleOption.initFrom(this);
+
+    QPainter painter(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &styleOption, &painter, this);
+}
+
 void Clip::onPlayStop()
 {
     if (mPlayer) {
         mPlayer->stop();
     } else {
-        mPlayer = mManager->play(mFilename, mVolume);
+        mPlayer = mManager->queue(mFilename, mVolume);
         connect(mPlayer, &Player::error, this, &Clip::onPlayerFinished);
         connect(mPlayer, &Player::finished, this, &Clip::onPlayerFinished);
+        mPlayer->play();
         mButtonPlayStop.setIcon(getPixmapStop());
     }
 }

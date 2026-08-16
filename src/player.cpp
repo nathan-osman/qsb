@@ -35,11 +35,15 @@ Player::Player()
     connect(&mTimer, &QTimer::timeout, this, &Player::idleTimeout);
 }
 
-void Player::play(const QString &filename, float volume)
+void Player::init(const QString &filename, float volume)
 {
-    mTimer.stop();
     mAudioOutput.setVolume(volume);
     mMediaPlayer.setSource(filename);
+}
+
+void Player::play()
+{
+    mTimer.stop();
     mMediaPlayer.play();
 }
 

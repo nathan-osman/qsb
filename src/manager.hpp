@@ -38,7 +38,7 @@ public:
 
     virtual ~Manager();
 
-    Player *play(const QString &, float);
+    Player *queue(const QString &, float);
     void stopAll();
 
 private slots:

@@ -37,7 +37,8 @@ public:
 
     Player();
 
-    void play(const QString &, float);
+    void init(const QString &, float);
+    void play();
     void stop();
 
 signals:
