@@ -24,17 +24,15 @@
 
 #include "pixmaps.hpp"
 
-const QPixmap &getPixmapPlay() {
-    static const QPixmap pixmap("://images/play.png");
-    return pixmap;
-}
+#define DECLARE_PIXMAP_LOADER(fn, path) \
+    const QPixmap &fn() { \
+        static const QPixmap pixmap(path);\
+        return pixmap; \
+    }
 
-const QPixmap &getPixmapSettings() {
-    static const QPixmap pixmap("://images/settings.png");
-    return pixmap;
-}
-
-const QPixmap &getPixmapStop() {
-    static const QPixmap pixmap("://images/stop.png");
-    return pixmap;
-}
+DECLARE_PIXMAP_LOADER(getPixmapNew, "://images/new.png")
+DECLARE_PIXMAP_LOADER(getPixmapOpen, "://images/open.png")
+DECLARE_PIXMAP_LOADER(getPixmapPlay, "://images/play.png")
+DECLARE_PIXMAP_LOADER(getPixmapSave, "://images/save.png")
+DECLARE_PIXMAP_LOADER(getPixmapSettings, "://images/settings.png")
+DECLARE_PIXMAP_LOADER(getPixmapStop, "://images/stop.png")

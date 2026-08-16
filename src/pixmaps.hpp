@@ -27,7 +27,10 @@
 
 #include <QPixmap>
 
+const QPixmap &getPixmapNew();
+const QPixmap &getPixmapOpen();
 const QPixmap &getPixmapPlay();
+const QPixmap &getPixmapSave();
 const QPixmap &getPixmapSettings();
 const QPixmap &getPixmapStop();
 
