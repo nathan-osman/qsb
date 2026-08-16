@@ -27,6 +27,7 @@
 Player::Player()
 {
     mMediaPlayer.setAudioOutput(&mAudioOutput);
+    connect(&mMediaPlayer, &QMediaPlayer::errorOccurred, this, &Player::error);
     connect(&mMediaPlayer, &QMediaPlayer::playbackStateChanged, this, &Player::onPlaybackStateChanged);
 
     mTimer.setInterval(30000);

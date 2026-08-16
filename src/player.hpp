@@ -42,6 +42,7 @@ public:
 
 signals:
 
+    void error();
     void finished();
     void idleTimeout();
 
