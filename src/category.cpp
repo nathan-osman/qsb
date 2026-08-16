@@ -65,11 +65,11 @@ Category::Category(Manager *manager, QWidget *parent)
     titleLayout->addWidget(buttonRemove);
 
     QFrame *hLine = new QFrame;
-    hLine->setContentsMargins(0, 32, 0, 32);
     hLine->setFrameShape(QFrame::HLine);
     hLine->setFrameShadow(QFrame::Sunken);
 
     mWidgetClips.setLayout(&mLayoutClips);
+    mLayoutClips.setContentsMargins(0, 0, 0, 0);
 
     QPushButton *buttonNew = new QPushButton("New Clip");
     buttonNew->setIcon(getPixmapNew());
