@@ -25,7 +25,9 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QJsonArray>
+#include <QPainter>
 #include <QPushButton>
+#include <QStyleOption>
 
 #include "category.hpp"
 #include "categorydialog.hpp"
@@ -96,6 +98,15 @@ void Category::deserialize(const QJsonObject &object)
     for (auto i : clips) {
         newClip()->deserialize(i.toObject());
     }
+}
+
+void Category::paintEvent(QPaintEvent *)
+{
+    QStyleOption styleOption;
+    styleOption.initFrom(this);
+
+    QPainter painter(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &styleOption, &painter, this);
 }
 
 void Category::onSettings()

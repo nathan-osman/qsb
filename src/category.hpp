@@ -49,6 +49,10 @@ signals:
     void remove();
     void markDirty();
 
+protected:
+
+    virtual void paintEvent(QPaintEvent *);
+
 private slots:
 
     void onSettings();

@@ -44,6 +44,8 @@ MainWindow::MainWindow()
     initUi();
     initDocument();
 
+    setStyleSheet("Category { background-color: #ffffff; border-radius: 4px; }");
+
     setWindowIcon(QPixmap(":/images/logo.png"));
     resize(1024, 768);
 }
