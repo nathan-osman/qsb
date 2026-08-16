@@ -53,14 +53,16 @@ Clip::Clip(Manager *manager, QWidget *parent)
     setLayout(hboxLayout);
 }
 
-void Clip::serialize(QJsonObject &object)
+QJsonObject Clip::serialize() const
 {
+    QJsonObject object;
     object.insert("name", mLabelName.text());
     object.insert("filename", mFilename);
     object.insert("volume", mVolume);
+    return object;
 }
 
-void Clip::deserialize(QJsonObject &object)
+void Clip::deserialize(const QJsonObject &object)
 {
     mLabelName.setText(object.value("name").toString());
     mFilename = object.value("filename").toString();

@@ -41,8 +41,8 @@ public:
 
     Clip(Manager *, QWidget *);
 
-    void serialize(QJsonObject &);
-    void deserialize(QJsonObject &);
+    QJsonObject serialize() const;
+    void deserialize(const QJsonObject &);
 
 signals:
 
