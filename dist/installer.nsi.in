@@ -1,6 +1,7 @@
 ;NSIS Installer for ${PROJECT_NAME}
 
 !include "MUI2.nsh"
+!include "AdvUninstLog.nsh"
 
 Name "${PROJECT_NAME}"
 OutFile "${CMAKE_CURRENT_BINARY_DIR}\${PROJECT_NAME}-${PROJECT_VERSION}-${PROJECT_ARCH}.exe"
