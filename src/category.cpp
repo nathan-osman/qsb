@@ -1,0 +1,105 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2026 Nathan Osman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+
+#include <QFont>
+#include <QHBoxLayout>
+#include <QJsonArray>
+#include <QPushButton>
+
+#include "category.hpp"
+#include "pixmaps.hpp"
+
+Category::Category(Manager *manager, QWidget *parent)
+    : QWidget(parent)
+    , mManager(manager)
+{
+    // TODO: smarter width management
+    setMinimumWidth(250);
+    setMaximumWidth(250);
+
+    QFont font = mLabelName.font();
+    font.setPointSize(18);
+    mLabelName.setFont(font);
+    mLabelName.setText("[Untitled]");
+
+    QPushButton *buttonRemove = new QPushButton;
+    buttonRemove->setIcon(getPixmapRemove());
+    buttonRemove->setToolTip("Remove");
+    connect(buttonRemove, &QAbstractButton::clicked, this, &Category::remove);
+
+    QHBoxLayout *titleLayout = new QHBoxLayout;
+    titleLayout->addWidget(&mLabelName);
+    titleLayout->addStretch(1);
+    titleLayout->addWidget(buttonRemove);
+
+    mWidgetClips.setLayout(&mLayoutClips);
+
+    QPushButton *buttonNew = new QPushButton("New Clip");
+    buttonNew->setIcon(getPixmapNew());
+    connect(buttonNew, &QAbstractButton::clicked, this, &Category::onNewClip);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->addLayout(titleLayout);
+    mainLayout->addWidget(&mWidgetClips);
+    mainLayout->addWidget(buttonNew);
+    mainLayout->addStretch(1);
+}
+
+QJsonObject Category::serialize() const
+{
+    QJsonObject object;
+    object.insert("name", mLabelName.text());
+
+    QJsonArray clips;
+    for (auto i : mLayoutClips.children()) {
+        clips.append(dynamic_cast<Clip *>(i)->serialize());
+    }
+    object.insert("clips", clips);
+
+    return object;
+}
+
+void Category::deserialize(const QJsonObject &object)
+{
+    mLabelName.setText(object.value("name").toString());
+
+    const QJsonArray clips = object.value("clips").toArray();
+    for (auto i : clips) {
+        newClip()->deserialize(i.toObject());
+    }
+}
+
+void Category::onNewClip()
+{
+    newClip();
+    emit markDirty();
+}
+
+Clip *Category::newClip()
+{
+    Clip *clip = new Clip(mManager, this);
+    connect(clip, &Clip::markDirty, this, &Category::markDirty);
+    mLayoutClips.addWidget(clip);
+    return clip;
+}

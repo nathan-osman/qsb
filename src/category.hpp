@@ -22,18 +22,46 @@
  * IN THE SOFTWARE.
  */
 
-#include "pixmaps.hpp"
+#ifndef CATEGORY_HPP
+#define CATEGORY_HPP
 
-#define DECLARE_PIXMAP_LOADER(fn, path) \
-    const QPixmap &fn() { \
-        static const QPixmap pixmap(path);\
-        return pixmap; \
-    }
+#include <QJsonObject>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QWidget>
 
-DECLARE_PIXMAP_LOADER(getPixmapRemove, "://images/remove.png")
-DECLARE_PIXMAP_LOADER(getPixmapNew, "://images/new.png")
-DECLARE_PIXMAP_LOADER(getPixmapOpen, "://images/open.png")
-DECLARE_PIXMAP_LOADER(getPixmapPlay, "://images/play.png")
-DECLARE_PIXMAP_LOADER(getPixmapSave, "://images/save.png")
-DECLARE_PIXMAP_LOADER(getPixmapSettings, "://images/settings.png")
-DECLARE_PIXMAP_LOADER(getPixmapStop, "://images/stop.png")
+#include "clip.hpp"
+#include "manager.hpp"
+
+class Category : public QWidget
+{
+    Q_OBJECT
+
+public:
+
+    Category(Manager *, QWidget *);
+
+    QJsonObject serialize() const;
+    void deserialize(const QJsonObject &);
+
+signals:
+
+    void remove();
+    void markDirty();
+
+private slots:
+
+    void onNewClip();
+
+private:
+
+    Clip *newClip();
+
+    Manager *mManager;
+
+    QLabel mLabelName;
+    QWidget mWidgetClips;
+    QVBoxLayout mLayoutClips;
+};
+
+#endif // CATEGORY_HPP

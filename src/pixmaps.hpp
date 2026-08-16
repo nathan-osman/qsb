@@ -27,6 +27,7 @@
 
 #include <QPixmap>
 
+const QPixmap &getPixmapRemove();
 const QPixmap &getPixmapNew();
 const QPixmap &getPixmapOpen();
 const QPixmap &getPixmapPlay();
