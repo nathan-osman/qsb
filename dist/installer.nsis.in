@@ -3,7 +3,7 @@
 !include "MUI2.nsh"
 
 Name "${PROJECT_NAME}"
-OutFile "${CMAKE_CURRENT_BINARY_DIR}\${PROJECT_NAME}-${PROJECT_VERSION}-setup.exe"
+OutFile "${CMAKE_CURRENT_BINARY_DIR}\${PROJECT_NAME}-${PROJECT_VERSION}-${PROJECT_ARCH}.exe"
 Unicode True
 
 InstallDir "$LOCALAPPDATA\Programs\${PROJECT_NAME}"
@@ -29,10 +29,17 @@ RequestExecutionLevel User
 Section "Application" SecApp
   SetOutPath "$INSTDIR"
 
-  File "$<TARGET_FILE:QSoundBoard>"
+  File /x "vc_redist.${PROJECT_ARCH}.exe" "$<SHELL_PATH:${OUTPUT_PREFIX}>\*"
 
   WriteRegStr HKCU "Software\${PROJECT_NAME}" "" $INSTDIR
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+  SetOutPath "$TEMP"
+
+  DetailPrint "Installing Visual C++ ${PROJECT_ARCH} Redistributable..."
+  ExecWait '"$TEMP\vc_redist.${PROJECT_ARCH}.exe" /quiet /norestart'
+
+  Delete "$TEMP\vc_redist.${PROJECT_ARCH}.exe"
 SectionEnd
 
 Section "Uninstall"

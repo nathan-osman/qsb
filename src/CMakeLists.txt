@@ -1,3 +1,10 @@
+# Determine where QT's bin/ directory is located
+get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
+get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
+
+# Look for windeployqt in this path
+find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
+
 set(SRC
     category.hpp
     category.cpp
@@ -21,8 +28,17 @@ set(SRC
     util.cpp
 )
 
-add_executable(QSoundBoard ${SRC})
+add_executable(QSoundBoard WIN32 ${SRC})
 
 target_link_libraries(QSoundBoard PRIVATE Qt6::Multimedia Qt6::Widgets)
 
 install(TARGETS QSoundBoard RUNTIME DESTINATION bin)
+
+add_custom_command(TARGET QSoundBoard POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+        env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
+            --verbose 0
+            --no-opengl-sw
+            \"$<TARGET_FILE:QSoundBoard>\"
+    COMMENT "Deploying Qt..."
+)
