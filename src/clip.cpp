@@ -38,14 +38,17 @@ Clip::Clip(Manager *manager, QWidget *parent)
     mLabelName.setText("[Untitled]");
 
     mButtonPlayStop.setIcon(getPixmapPlay());
+    mButtonPlayStop.setToolTip("Play / Stop");
     connect(&mButtonPlayStop, &QAbstractButton::clicked, this, &Clip::onPlayStop);
 
     QPushButton *buttonSettings = new QPushButton;
     buttonSettings->setIcon(getPixmapSettings());
+    buttonSettings->setToolTip("Settings");
     connect(buttonSettings, &QAbstractButton::clicked, this, &Clip::onSettings);
 
     QHBoxLayout *hboxLayout = new QHBoxLayout(this);
     hboxLayout->setContentsMargins(0, 0, 0, 0);
+    hboxLayout->setSpacing(0);
     hboxLayout->addWidget(&mLabelName);
     hboxLayout->addStretch(1);
     hboxLayout->addWidget(&mButtonPlayStop);
