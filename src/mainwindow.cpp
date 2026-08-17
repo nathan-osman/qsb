@@ -313,8 +313,8 @@ void MainWindow::setFilename(const QString &filename)
     mFilename = filename;
 
     if (mFilename.isNull()) {
-        setWindowTitle("QSoundBar");
+        setWindowTitle("QSoundBoard");
     } else {
-        setWindowTitle(tr("QSoundBar - %1").arg(filename));
+        setWindowTitle(tr("QSoundBoard - %1").arg(filename));
     }
 }
