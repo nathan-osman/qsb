@@ -42,3 +42,13 @@ add_custom_command(TARGET QSoundBoard POST_BUILD
             \"$<TARGET_FILE:QSoundBoard>\"
     COMMENT "Deploying Qt..."
 )
+
+include(InstallRequiredSystemLibraries)
+foreach(lib ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
+    get_filename_component(filename "${lib}" NAME)
+    add_custom_command(TARGET QSoundBoard POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E
+            copy_if_different "${lib}" \"$<TARGET_FILE_DIR:QSoundBoard>\"
+        COMMENT "Copying ${filename}..."
+    )
+endforeach()

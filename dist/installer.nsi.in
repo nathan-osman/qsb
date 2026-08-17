@@ -49,14 +49,9 @@ Section "Main Application"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "InstallDir" "$INSTDIR"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "DisplayIcon" "$INSTDIR\$<TARGET_FILE_NAME:QSoundBoard>,0"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "DisplayName" "@PROJECT_NAME@"
+  WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "DisplayVersion" "@PROJECT_VERSION@"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "Publisher" "@PROJECT_AUTHOR@"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "UninstallString" "${UNINST_EXE}"
-
-  ; Run the MSVC++ runtime installer
-  DetailPrint "Installing Visual C++ @PROJECT_ARCH@ Redistributable..."
-  SetOutPath "$TEMP"
-  File "$<SHELL_PATH:@OUTPUT_PREFIX@\vc_redist.@PROJECT_ARCH@.exe>"
-  ExecWait '"$TEMP\vc_redist.@PROJECT_ARCH@.exe" /quiet /norestart'
 SectionEnd
 
 Function .onInit
