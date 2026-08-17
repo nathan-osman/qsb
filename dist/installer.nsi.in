@@ -47,7 +47,9 @@ Section "Main Application"
 
   ; Register the installation with Settings
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "InstallDir" "$INSTDIR"
+  WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "DisplayIcon" "$INSTDIR\$<TARGET_FILE_NAME:QSoundBoard>,0"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "DisplayName" "@PROJECT_NAME@"
+  WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "Publisher" "@PROJECT_AUTHOR@"
   WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "UninstallString" "${UNINST_EXE}"
 
   ; Run the MSVC++ runtime installer
@@ -75,5 +77,5 @@ Section "Uninstall"
   RmDir "$SMPROGRAMS\@PROJECT_AUTHOR@"
 
   ; Unregister the installation with Settings
-  DeleteRegKey /ifempty ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}"
+  DeleteRegKey ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}"
 SectionEnd
