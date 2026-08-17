@@ -1,6 +1,7 @@
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/installer.nsi.in"
     "${CMAKE_CURRENT_BINARY_DIR}/installer.nsi.tmp"
+    @ONLY
 )
 
 file(GENERATE

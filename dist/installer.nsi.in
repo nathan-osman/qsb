@@ -1,53 +1,79 @@
-;NSIS Installer for ${PROJECT_NAME}
+;NSIS Installer for @PROJECT_NAME@
+
+!define INSTDIR_REG_ROOT "HKCU"
+!define INSTDIR_REG_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\@PROJECT_NAME@"
 
 !include "MUI2.nsh"
-!include "AdvUninstLog.nsh"
+!include "@CMAKE_CURRENT_SOURCE_DIR@\AdvUninstLog.nsh"
 
-Name "${PROJECT_NAME}"
-OutFile "${CMAKE_CURRENT_BINARY_DIR}\${PROJECT_NAME}-${PROJECT_VERSION}-${PROJECT_ARCH}.exe"
+Name "@PROJECT_NAME@"
+OutFile "@CMAKE_CURRENT_BINARY_DIR@\@PROJECT_NAME@-@PROJECT_VERSION@-@PROJECT_ARCH@.exe"
 Unicode True
 
-InstallDir "$LOCALAPPDATA\Programs\${PROJECT_NAME}"
-InstallDirRegKey HKCU "Software\${PROJECT_NAME}" ""
+InstallDir "$LOCALAPPDATA\Programs\@PROJECT_AUTHOR@\@PROJECT_NAME@"
+InstallDirRegKey ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "InstallDir"
 
 ManifestDPIAware true
 RequestExecutionLevel User
 
 !define MUI_ABORTWARNING
-!define MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\icon.ico"
+!define MUI_ICON "@CMAKE_CURRENT_SOURCE_DIR@\icon.ico"
+
+!insertmacro INTERACTIVE_UNINSTALL
 
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "${CMAKE_SOURCE_DIR}\LICENSE.txt"
+!insertmacro MUI_PAGE_LICENSE "@CMAKE_SOURCE_DIR@\LICENSE.txt"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
 
-Section "Application" SecApp
+Section "Main Application"
   SetOutPath "$INSTDIR"
 
-  File /x "vc_redist.${PROJECT_ARCH}.exe" "$<SHELL_PATH:${OUTPUT_PREFIX}>\*"
+  ; Write the main application files to disk
+  !insertmacro UNINSTALL.LOG_OPEN_INSTALL
+  File /r /x "vc_redist.@PROJECT_ARCH@.exe" "$<SHELL_PATH:@OUTPUT_PREFIX@>\*"
+  !insertmacro UNINSTALL.LOG_CLOSE_INSTALL
 
-  WriteRegStr HKCU "Software\${PROJECT_NAME}" "" $INSTDIR
-  WriteUninstaller "$INSTDIR\Uninstall.exe"
+  ; Create the Start Menu shortcuts
+  CreateDirectory "$SMPROGRAMS\@PROJECT_AUTHOR@"
+  CreateShortcut "$SMPROGRAMS\@PROJECT_AUTHOR@\@PROJECT_NAME@.lnk" "$INSTDIR\$<TARGET_FILE_NAME:QSoundBoard>"
 
+  ; Register the installation with Settings
+  WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "InstallDir" "$INSTDIR"
+  WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "DisplayName" "@PROJECT_NAME@"
+  WriteRegStr ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}" "UninstallString" "${UNINST_EXE}"
+
+  ; Run the MSVC++ runtime installer
+  DetailPrint "Installing Visual C++ @PROJECT_ARCH@ Redistributable..."
   SetOutPath "$TEMP"
-
-  DetailPrint "Installing Visual C++ ${PROJECT_ARCH} Redistributable..."
-  ExecWait '"$TEMP\vc_redist.${PROJECT_ARCH}.exe" /quiet /norestart'
-
-  Delete "$TEMP\vc_redist.${PROJECT_ARCH}.exe"
+  File "$<SHELL_PATH:@OUTPUT_PREFIX@\vc_redist.@PROJECT_ARCH@.exe>"
+  ExecWait '"$TEMP\vc_redist.@PROJECT_ARCH@.exe" /quiet /norestart'
 SectionEnd
 
+Function .onInit
+  !insertmacro UNINSTALL.LOG_PREPARE_INSTALL
+FunctionEnd
+
+Function .onInstSuccess
+  !insertmacro UNINSTALL.LOG_UPDATE_INSTALL
+FunctionEnd
+
 Section "Uninstall"
-  Delete "$INSTDIR\$<TARGET_FILE_NAME:QSoundBoard>"
-  Delete "$INSTDIR\Uninstall.exe"
+  !insertmacro UNINSTALL.LOG_BEGIN_UNINSTALL
+  !insertmacro UNINSTALL.LOG_UNINSTALL "$INSTDIR"
+  !insertmacro UNINSTALL.LOG_END_UNINSTALL
 
-  RMDir "$INSTDIR"
+  ; Remove the Start Menu shortcuts
+  Delete "$SMPROGRAMS\@PROJECT_AUTHOR@\@PROJECT_NAME@.lnk"
+  RmDir "$SMPROGRAMS\@PROJECT_AUTHOR@"
 
-  DeleteRegKey /ifempty HKCU "Software\${PROJECT_NAME}"
+  ; Unregister the installation with Settings
+  DeleteRegKey /ifempty ${INSTDIR_REG_ROOT} "${INSTDIR_REG_KEY}"
 SectionEnd
