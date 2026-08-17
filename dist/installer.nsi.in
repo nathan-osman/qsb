@@ -6,6 +6,8 @@
 !include "MUI2.nsh"
 !include "@CMAKE_CURRENT_SOURCE_DIR@\AdvUninstLog.nsh"
 
+SetCompressor /SOLID lzma
+
 Name "@PROJECT_NAME@"
 OutFile "@CMAKE_CURRENT_BINARY_DIR@\@PROJECT_NAME@-@PROJECT_VERSION@-@PROJECT_ARCH@.exe"
 Unicode True

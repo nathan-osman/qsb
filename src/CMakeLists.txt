@@ -32,12 +32,15 @@ add_executable(QSoundBoard WIN32 ${SRC})
 
 target_link_libraries(QSoundBoard PRIVATE Qt6::Multimedia Qt6::Widgets)
 
+target_sources(QSoundBoard PRIVATE resource.rc)
+
 install(TARGETS QSoundBoard RUNTIME DESTINATION bin)
 
 add_custom_command(TARGET QSoundBoard POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
         env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
             --verbose 0
+            --no-compiler-runtime
             --no-opengl-sw
             \"$<TARGET_FILE:QSoundBoard>\"
     COMMENT "Deploying Qt..."
