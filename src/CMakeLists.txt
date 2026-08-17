@@ -32,26 +32,28 @@ add_executable(QSoundBoard WIN32 ${SRC})
 
 target_link_libraries(QSoundBoard PRIVATE Qt6::Multimedia Qt6::Widgets)
 
-target_sources(QSoundBoard PRIVATE resource.rc)
-
 install(TARGETS QSoundBoard RUNTIME DESTINATION bin)
 
-add_custom_command(TARGET QSoundBoard POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E
-        env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
-            --verbose 0
-            --no-compiler-runtime
-            --no-opengl-sw
-            \"$<TARGET_FILE:QSoundBoard>\"
-    COMMENT "Deploying Qt..."
-)
+if(WIN32)
+    target_sources(QSoundBoard PRIVATE resource.rc)
 
-include(InstallRequiredSystemLibraries)
-foreach(lib ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
-    get_filename_component(filename "${lib}" NAME)
     add_custom_command(TARGET QSoundBoard POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E
-            copy_if_different "${lib}" \"$<TARGET_FILE_DIR:QSoundBoard>\"
-        COMMENT "Copying ${filename}..."
+            env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
+                --verbose 0
+                --no-compiler-runtime
+                --no-opengl-sw
+                \"$<TARGET_FILE:QSoundBoard>\"
+        COMMENT "Deploying Qt..."
     )
-endforeach()
+
+    include(InstallRequiredSystemLibraries)
+    foreach(lib ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
+        get_filename_component(filename "${lib}" NAME)
+        add_custom_command(TARGET QSoundBoard POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E
+                copy_if_different "${lib}" \"$<TARGET_FILE_DIR:QSoundBoard>\"
+            COMMENT "Copying ${filename}..."
+        )
+    endforeach()
+endif()
